@@ -1,9 +1,14 @@
 <script setup lang="ts">
+import { ref } from 'vue';
 import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-vue-next';
 
+import AddPersonDialog from '@/components/AddPersonDialog.vue';
+
+const isDialogOpen = ref(false);
+
 const handleAddPerson = () => {
-  console.log('Add Person');
+  isDialogOpen.value = true;
 };
 </script>
 
@@ -18,5 +23,6 @@ const handleAddPerson = () => {
         </Button>
       </div>
     </div>
+    <AddPersonDialog v-model:open="isDialogOpen" />
   </main>
 </template>
