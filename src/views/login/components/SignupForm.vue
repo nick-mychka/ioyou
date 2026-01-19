@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
-import { useLocalStorage } from '@vueuse/core';
 import { useMutation, useQueryClient } from '@tanstack/vue-query';
 import { Eye, EyeOff } from 'lucide-vue-next';
 import { some } from 'es-toolkit/compat';
@@ -9,12 +8,12 @@ import { z } from 'zod';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Spinner } from '@/components/ui/spinner';
+import { useAuthToken } from '@/composables/useAuthToken';
 import { setBearerToken } from '@/api';
 import { container } from '@/services/container';
-import { AUTH_TOKEN_KEY } from '@/config/constants';
 import { SignupFormSchema, type SignupForm } from '@/types/auth';
 
-const token = useLocalStorage<string | null>(AUTH_TOKEN_KEY, null);
+const token = useAuthToken();
 
 const formData = ref<SignupForm>({
   name: '',

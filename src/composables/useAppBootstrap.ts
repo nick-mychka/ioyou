@@ -1,32 +1,26 @@
 import { computed, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { toast } from 'vue-sonner';
-import { useQuery, useQueryClient } from '@tanstack/vue-query';
-import { useLocalStorage } from '@vueuse/core';
+import { useQueryClient } from '@tanstack/vue-query';
 
 import { setBearerToken } from '@/api';
-import { container } from '@/services/container';
-import { AUTH_TOKEN_KEY } from '@/config/constants';
+
+import { useAuthToken } from './useAuthToken';
+import { useCurrentUser } from './useCurrentUser';
 
 export function useAppBootstrap() {
-  const token = useLocalStorage<string | null>(AUTH_TOKEN_KEY, null);
+  const token = useAuthToken();
   if (token.value) setBearerToken(token.value);
 
   const router = useRouter();
 
   const queryClient = useQueryClient();
-  const authService = container.getAuthService();
 
   const {
     data: user,
     isLoading,
     error,
-  } = useQuery({
-    queryKey: ['me'],
-    queryFn: () => authService.me(),
-    enabled: computed(() => !!token.value),
-    retry: false,
-  });
+  } = useCurrentUser();
 
   // Handle auth errors - clear token (triggers redirect via token watcher)
   watch(error, (authError) => {

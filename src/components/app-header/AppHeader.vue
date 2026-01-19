@@ -1,11 +1,10 @@
 <script setup lang="ts">
 import { LogOut } from 'lucide-vue-next';
-import { useLocalStorage } from '@vueuse/core';
 
 import { Button } from '@/components/ui/button';
-import { AUTH_TOKEN_KEY } from '@/config/constants';
+import { useAuthToken } from '@/composables/useAuthToken';
 
-const token = useLocalStorage<string | null>(AUTH_TOKEN_KEY, null);
+const token = useAuthToken();
 
 const handleLogout = () => {
   token.value = null;
