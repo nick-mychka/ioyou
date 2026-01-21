@@ -7,14 +7,10 @@ import { Button } from '@/components/ui/button';
 import AddPersonDialog from './AddPersonDialog.vue';
 
 const isDialogOpen = ref(false);
-
-const handleAddPerson = () => {
-  isDialogOpen.value = true;
-};
 </script>
 
 <template>
-  <Button @click="handleAddPerson">
+  <Button @click="isDialogOpen = true;">
     <Plus />
     Add Person
   </Button>

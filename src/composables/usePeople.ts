@@ -3,7 +3,7 @@ import { toast } from 'vue-sonner';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/vue-query';
 
 import { container } from '@/services/container';
-import type { CreatePersonForm, UpdatePersonForm } from '@/types/person';
+import type { CreatePersonForm } from '@/types/person';
 
 const QUERY_KEY = 'people';
 
