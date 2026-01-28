@@ -3,7 +3,7 @@ import { toast } from 'vue-sonner';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/vue-query';
 
 import { container } from '@/services/container';
-import type { CreatePersonForm } from '@/types/person';
+import type { CreatePersonForm, Person, UpdatePersonForm } from '@/types/person';
 
 const QUERY_KEY = 'people';
 
@@ -52,8 +52,69 @@ export const useCreatePerson = ({ onSuccess }: { onSuccess?: () => void }) => {
     mutationFn: (data: CreatePersonForm) => personService.create(data),
     onSuccess: async () => {
       toast.success('Person created successfully');
-      await queryClient.invalidateQueries({ queryKey: [QUERY_KEY] });
+      try {
+        await queryClient.invalidateQueries({ queryKey: [QUERY_KEY] });
+        if (onSuccess) onSuccess();
+      } catch (error) {
+        console.error('Failed to invalidate queries:', error);
+      }
+    },
+  });
+};
+
+export const useUpdatePerson = ({ onSuccess }: { onSuccess?: () => void }) => {
+  const queryClient = useQueryClient();
+  const personService = container.getPersonService();
+
+  return useMutation({
+    mutationFn: ({ id, data }: { id: string; data: UpdatePersonForm }) =>
+      personService.update(id, data),
+    onSuccess: async (updatedPerson) => {
+      toast.success('Person updated successfully');
+
+      queryClient.setQueryData([QUERY_KEY], (old: Person[] | undefined) => {
+        if (!old) return [];
+
+        const personExists = old.some((person) => person.id === updatedPerson.id);
+
+        if (personExists) {
+          return old.map((person) => (person.id === updatedPerson.id ? updatedPerson : person));
+        } else {
+          return [...old, updatedPerson];
+        }
+      });
+
+      try {
+        await queryClient.invalidateQueries({ queryKey: [QUERY_KEY, updatedPerson.id] });
+        if (onSuccess) onSuccess();
+      } catch (error) {
+        console.error('Failed to invalidate queries:', error);
+      }
+    },
+    onError: () => {
+      toast.error('Failed to update person');
+    },
+  });
+};
+
+export const useRemovePerson = ({ onSuccess }: { onSuccess?: () => void }) => {
+  const queryClient = useQueryClient();
+  const personService = container.getPersonService();
+
+  return useMutation({
+    mutationFn: (id: string) => personService.remove(id),
+    onSuccess: async (_data, deletedId) => {
+      toast.success('Person deleted successfully');
+
+      queryClient.setQueryData([QUERY_KEY], (old: Person[] | undefined) => {
+        if (!old) return [];
+        return old.filter((person) => person.id !== deletedId);
+      });
+
       if (onSuccess) onSuccess();
+    },
+    onError: () => {
+      toast.error('Failed to delete person');
     },
   });
 };

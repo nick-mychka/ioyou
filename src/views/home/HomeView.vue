@@ -9,13 +9,22 @@ import AddPersonButton from './components/add-person/AddPersonButton.vue';
 import PeopleList from './components/PeopleList.vue';
 import PeopleEmpty from './components/PeopleEmpty.vue';
 import PersonUnselected from './components/PersonUnselected.vue';
+import PersonDetails from './components/PersonDetails.vue';
 
 const { data, isPending, isSuccess, error } = usePeople();
-const selectedPersonId = ref<number | null>(null);
+const selectedPersonId = ref<string | null>(null);
 
 const peoplePresent = computed(() => {
   return isSuccess.value && data.value && data.value.length > 0;
 });
+
+const handlePersonSelect = (id: string) => {
+  if (selectedPersonId.value === id) {
+    selectedPersonId.value = null;
+  } else {
+    selectedPersonId.value = id;
+  }
+};
 </script>
 
 <template>
@@ -33,13 +42,25 @@ const peoplePresent = computed(() => {
               <AddPersonButton />
             </template>
           </header>
-          <PeopleList :data="data" :isPending="isPending" :error="error" />
+          <PeopleList
+            :data="data"
+            :isPending="isPending"
+            :selected-person-id="selectedPersonId"
+            @select-person="handlePersonSelect"
+            @person-deleted="selectedPersonId = null"
+          />
         </template>
         <PeopleEmpty v-else />
       </section>
       <Separator orientation="vertical" class="self-stretch" />
       <section class="flex flex-col px-6 py-8">
-        <PersonUnselected v-if="peoplePresent && !selectedPersonId" />
+        <PersonUnselected v-if="!selectedPersonId" />
+        <PersonDetails
+          v-else
+          :person-id="selectedPersonId"
+          :key="selectedPersonId"
+          @close="selectedPersonId = null"
+        />
       </section>
     </div>
   </main>

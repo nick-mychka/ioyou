@@ -4,9 +4,15 @@ import type { Person } from '@/types/person';
 
 import PeopleListItem from './PeopleListItem.vue';
 
-const { data, isPending } = defineProps<{
+const { data, isPending, selectedPersonId } = defineProps<{
   data: Person[] | undefined;
   isPending: boolean;
+  selectedPersonId?: string | null;
+}>();
+
+const emit = defineEmits<{
+  selectPerson: [id: string];
+  personDeleted: [];
 }>();
 
 const skeletonLimit = 2;
@@ -23,7 +29,12 @@ const skeletonLimit = 2;
       </template>
       <template v-else>
         <template v-for="(person, index) in data" :key="person.id">
-          <PeopleListItem :person="person" />
+          <PeopleListItem
+            :person="person"
+            :is-selected="selectedPersonId === person.id"
+            @click="emit('selectPerson', person.id)"
+            @deleted="emit('personDeleted')"
+          />
           <ItemSeparator v-if="data && index !== data.length - 1" />
         </template>
       </template>
