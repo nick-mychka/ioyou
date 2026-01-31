@@ -10,7 +10,7 @@ const isDialogOpen = ref(false);
 </script>
 
 <template>
-  <Button @click="isDialogOpen = true;">
+  <Button @click="isDialogOpen = true">
     <Plus />
     Add Person
   </Button>

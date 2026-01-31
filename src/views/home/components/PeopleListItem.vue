@@ -16,7 +16,11 @@ import PeopleActions from './PeopleActions.vue';
 import { DeletePersonDialog } from './delete-person';
 import { EditPersonDialog } from './edit-person';
 
-const { person, isPending = false, isSelected = false } = defineProps<{
+const {
+  person,
+  isPending = false,
+  isSelected = false,
+} = defineProps<{
   person?: Person;
   isPending?: boolean;
   isSelected?: boolean;
@@ -35,7 +39,7 @@ const isDeleteDialogOpen = ref(false);
   <Item
     class="cursor-pointer transition-all"
     :class="{
-      'ring-2 ring-primary shadow-lg shadow-primary/20 bg-primary/5': isSelected
+      'bg-primary/5 shadow-lg ring-2 shadow-primary/20 ring-primary': isSelected,
     }"
     @click="emit('click')"
   >

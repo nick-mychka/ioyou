@@ -16,11 +16,7 @@ export function useAppBootstrap() {
 
   const queryClient = useQueryClient();
 
-  const {
-    data: user,
-    isLoading,
-    error,
-  } = useCurrentUser();
+  const { data: user, isLoading, error } = useCurrentUser();
 
   // Handle auth errors - clear token (triggers redirect via token watcher)
   watch(error, (authError) => {

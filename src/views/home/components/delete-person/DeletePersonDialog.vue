@@ -20,7 +20,11 @@ const closeDialog = () => {
 <template>
   <AlertDialog v-model:open="open">
     <AlertDialogContent>
-      <DeletePersonDialogContent :person-id="personId" @close="closeDialog" @deleted="emit('deleted')" />
+      <DeletePersonDialogContent
+        :person-id="personId"
+        @close="closeDialog"
+        @deleted="emit('deleted')"
+      />
     </AlertDialogContent>
   </AlertDialog>
 </template>

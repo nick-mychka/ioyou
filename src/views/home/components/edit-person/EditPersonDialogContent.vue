@@ -73,12 +73,7 @@ const handleSave = () => {
     <Spinner />
   </div>
 
-  <form
-    v-else
-    id="edit-person-form"
-    class="flex flex-col gap-6 py-2"
-    @submit.prevent="handleSave"
-  >
+  <form v-else id="edit-person-form" class="flex flex-col gap-6 py-2" @submit.prevent="handleSave">
     <Field>
       <FieldLabel for="name">Name</FieldLabel>
       <Input v-model="name" id="name" placeholder="Enter name" />
