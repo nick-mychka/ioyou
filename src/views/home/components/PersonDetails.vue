@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { Calendar, X } from 'lucide-vue-next';
+import { ref } from 'vue';
+import { Calendar, X, Plus } from 'lucide-vue-next';
 
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
@@ -7,6 +8,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Separator } from '@/components/ui/separator';
 import { usePerson } from '@/composables/usePeople';
 import { formatDate } from '@/utils/dateFormatter';
+import { AddRecordDialog } from './add-record';
 
 const { personId } = defineProps<{
   personId: string;
@@ -17,6 +19,7 @@ const emit = defineEmits<{
 }>();
 
 const { data: person, isLoading } = usePerson(personId);
+const isAddRecordDialogOpen = ref(false);
 </script>
 
 <template>
@@ -47,7 +50,9 @@ const { data: person, isLoading } = usePerson(personId);
     <template v-else-if="person">
       <div class="flex items-center gap-4">
         <Avatar class="h-16 w-16">
-          <AvatarFallback class="text-2xl">{{ person.name.charAt(0).toUpperCase() }}</AvatarFallback>
+          <AvatarFallback class="text-2xl">{{
+            person.name.charAt(0).toUpperCase()
+          }}</AvatarFallback>
         </Avatar>
         <div class="flex flex-col">
           <h2 class="text-2xl font-semibold">{{ person.name }}</h2>
@@ -57,6 +62,11 @@ const { data: person, isLoading } = usePerson(personId);
       <div v-if="person.description" class="text-sm text-muted-foreground">
         {{ person.description }}
       </div>
+
+      <Button @click="isAddRecordDialogOpen = true" class="w-full">
+        <Plus class="h-4 w-4" />
+        Add Record
+      </Button>
 
       <Separator />
 
@@ -71,5 +81,7 @@ const { data: person, isLoading } = usePerson(personId);
         </div>
       </div>
     </template>
+
+    <AddRecordDialog v-if="person" v-model:open="isAddRecordDialogOpen" :person-id="personId" />
   </div>
 </template>
