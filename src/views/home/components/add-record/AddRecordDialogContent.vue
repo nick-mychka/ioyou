@@ -89,8 +89,14 @@ const handleAdd = () => {
     return jsDate.toISOString().split('T')[0]; // YYYY-MM-DD format
   };
 
+  const parsedPersonId = parseInt(personId, 10);
+  if (isNaN(parsedPersonId)) {
+    alert('Invalid person ID');
+    return;
+  }
+
   const formData = {
-    person_id: parseInt(personId),
+    person_id: parsedPersonId,
     kind: kind.value,
     amount: amount.value,
     currency: currency.value.trim(),
@@ -124,12 +130,24 @@ const handleAdd = () => {
   <form id="add-record-form" class="flex flex-col gap-6 py-4" @submit.prevent="handleAdd">
     <!-- Borrow / Lend Toggle -->
     <ToggleGroup v-model="kind" type="single" class="w-full" aria-label="Select record type">
-      <ToggleGroupItem value="borrow" class="flex-1" aria-label="Borrow">Borrow</ToggleGroupItem>
-      <ToggleGroupItem value="lend" class="flex-1" aria-label="Lend">Lend</ToggleGroupItem>
+      <ToggleGroupItem
+        value="borrow"
+        class="flex-1 transition-all data-[state=on]:bg-primary data-[state=on]:text-primary-foreground data-[state=on]:font-semibold data-[state=on]:shadow-sm"
+        aria-label="Borrow"
+      >
+        Borrow
+      </ToggleGroupItem>
+      <ToggleGroupItem
+        value="lend"
+        class="flex-1 transition-all data-[state=on]:bg-primary data-[state=on]:text-primary-foreground data-[state=on]:font-semibold data-[state=on]:shadow-sm"
+        aria-label="Lend"
+      >
+        Lend
+      </ToggleGroupItem>
     </ToggleGroup>
 
     <!-- Amount + Currency -->
-    <div class="grid grid-cols-[1fr_auto] gap-2">
+    <div class="grid grid-cols-2 gap-2">
       <Field>
         <FieldLabel for="amount">Amount</FieldLabel>
         <NumberField
@@ -140,7 +158,7 @@ const handleAdd = () => {
         >
           <NumberFieldContent>
             <NumberFieldDecrement />
-            <NumberFieldInput placeholder="20" />
+            <NumberFieldInput placeholder="0.00" autofocus />
             <NumberFieldIncrement />
           </NumberFieldContent>
         </NumberField>
@@ -181,7 +199,7 @@ const handleAdd = () => {
     <!-- Note -->
     <Field>
       <FieldLabel for="note">Note</FieldLabel>
-      <Textarea v-model="note" id="note" placeholder="Enter note (optional)" rows="3" />
+      <Textarea v-model="note" id="note" placeholder="Enter note (optional)" rows="2" />
     </Field>
 
     <!-- Advanced Fields (Collapsible) -->
@@ -232,11 +250,11 @@ const handleAdd = () => {
         <!-- Interest rate + Penalty -->
         <div class="grid grid-cols-2 gap-2">
           <Field>
-            <FieldLabel for="interest-rate">Interest rate</FieldLabel>
+            <FieldLabel for="interest-rate">Interest rate (%)</FieldLabel>
             <NumberField v-model="interestRate" :min="0" :step="0.01">
               <NumberFieldContent>
                 <NumberFieldDecrement />
-                <NumberFieldInput placeholder="0" />
+                <NumberFieldInput placeholder="0.00" />
                 <NumberFieldIncrement />
               </NumberFieldContent>
             </NumberField>
@@ -246,7 +264,7 @@ const handleAdd = () => {
             <NumberField v-model="penalty" :min="0" :step="0.01">
               <NumberFieldContent>
                 <NumberFieldDecrement />
-                <NumberFieldInput placeholder="0" />
+                <NumberFieldInput placeholder="0.00" />
                 <NumberFieldIncrement />
               </NumberFieldContent>
             </NumberField>
