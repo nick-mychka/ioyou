@@ -16,18 +16,16 @@ const { personId } = defineProps<{
 
 const emit = defineEmits<{
   close: [];
-  deleted: [];
 }>();
 
-const { mutate: remove, isPending: isDeleting } = useRemovePerson({
+const { mutate: remove, isPending } = useRemovePerson({
   onSuccess: () => {
-    emit('deleted');
     emit('close');
   },
 });
 
 const handleDelete = () => {
-  if (isDeleting.value) return;
+  if (isPending.value) return;
   remove(personId);
 };
 </script>
@@ -36,14 +34,14 @@ const handleDelete = () => {
   <AlertDialogHeader>
     <AlertDialogTitle>Are you sure?</AlertDialogTitle>
     <AlertDialogDescription>
-      This action cannot be undone. This person will be permanently deleted from your list.
+      This person will be permanently deleted from your list. This action cannot be undone.
     </AlertDialogDescription>
   </AlertDialogHeader>
 
   <AlertDialogFooter>
     <AlertDialogCancel @click="emit('close')">Cancel</AlertDialogCancel>
-    <AlertDialogAction variant="destructive" @click="handleDelete" :disabled="isDeleting">
-      <Spinner v-if="isDeleting" /> Delete
+    <AlertDialogAction variant="destructive" @click="handleDelete" :disabled="isPending">
+      <Spinner v-if="isPending" /> Delete
     </AlertDialogAction>
   </AlertDialogFooter>
 </template>

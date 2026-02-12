@@ -3,22 +3,22 @@ import { useRouter } from 'vue-router';
 import { toast } from 'vue-sonner';
 import { useQueryClient } from '@tanstack/vue-query';
 
-import { setBearerToken } from '@/api';
+import { setBearerToken, deleteBearerToken } from '@/api';
 
 import { useAuthToken } from './useAuthToken';
 import { useCurrentUser } from './useCurrentUser';
 
 export function useAppBootstrap() {
   const token = useAuthToken();
-  if (token.value) setBearerToken(token.value);
-
   const router = useRouter();
-
   const queryClient = useQueryClient();
 
-  const { data: user, isLoading, error } = useCurrentUser();
+  if (token.value) {
+    setBearerToken(token.value);
+  }
 
-  // Handle auth errors - clear token (triggers redirect via token watcher)
+  const { data: user, error } = useCurrentUser();
+
   watch(error, (authError) => {
     if (authError) {
       token.value = null;
@@ -26,29 +26,16 @@ export function useAppBootstrap() {
     }
   });
 
-  // Handle logout/redirect
+  // Handle logout - clear query cache and redirect to login
   watch(token, (newToken) => {
     if (!newToken) {
-      queryClient.resetQueries({ queryKey: ['me'] });
-      if (router.currentRoute.value.name !== 'login') {
-        router.push({ name: 'login' });
-      }
+      queryClient.clear();
+      deleteBearerToken();
+      router.push({ name: 'login' });
     }
   });
 
-  const isPending = computed(() => {
-    if (!token.value) return false;
-    return isLoading.value;
-  });
-
-  const isAuthenticated = computed(() => !!user.value);
-
-  // Post-login navigation: redirect to home when auth succeeds on login page
-  watch(isAuthenticated, (isAuth) => {
-    if (isAuth && router.currentRoute.value.name === 'login') {
-      router.push({ name: 'home' });
-    }
-  });
-
-  return { isPending, isAuthenticated };
+  return {
+    isAuthenticated: computed(() => !!user.value),
+  };
 }

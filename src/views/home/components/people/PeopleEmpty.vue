@@ -9,7 +9,7 @@ import {
   EmptyTitle,
 } from '@/components/ui/empty';
 
-import AddPersonButton from './add-person/AddPersonButton.vue';
+import AddPersonButton from '../add-person/AddPersonButton.vue';
 </script>
 
 <template>

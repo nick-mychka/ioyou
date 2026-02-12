@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { ref } from 'vue';
 import {
   Item,
   ItemActions,
@@ -13,8 +12,6 @@ import { Skeleton } from '@/components/ui/skeleton';
 import type { Person } from '@/types/person';
 
 import PeopleActions from './PeopleActions.vue';
-import { DeletePersonDialog } from './delete-person';
-import { EditPersonDialog } from './edit-person';
 
 const {
   person,
@@ -26,13 +23,10 @@ const {
   isSelected?: boolean;
 }>();
 
-const emit = defineEmits<{
-  click: [];
-  deleted: [];
+defineEmits<{
+  edit: [personId: string];
+  delete: [personId: string];
 }>();
-
-const isEditDialogOpen = ref(false);
-const isDeleteDialogOpen = ref(false);
 </script>
 
 <template>
@@ -41,7 +35,6 @@ const isDeleteDialogOpen = ref(false);
     :class="{
       'bg-primary/5 shadow-lg ring-2 shadow-primary/20 ring-primary': isSelected,
     }"
-    @click="emit('click')"
   >
     <ItemMedia>
       <Skeleton v-if="isPending || !person" class="h-8 w-8 rounded-full" />
@@ -53,7 +46,7 @@ const isDeleteDialogOpen = ref(false);
     <ItemContent>
       <template v-if="isPending || !person">
         <Skeleton class="h-5 w-24 rounded-md" />
-        <Skeleton class="h-5 w-48 rounded-md" />
+        <Skeleton class="h-5.25 w-48 rounded-md" />
       </template>
       <template v-else>
         <ItemTitle>{{ person.name }}</ItemTitle>
@@ -61,19 +54,7 @@ const isDeleteDialogOpen = ref(false);
       </template>
     </ItemContent>
     <ItemActions v-if="!isPending && person" class="gap-0" @click.stop>
-      <PeopleActions
-        :person-id="person.id"
-        @edit="isEditDialogOpen = true"
-        @delete="isDeleteDialogOpen = true"
-      />
+      <PeopleActions @edit="$emit('edit', person.id)" @delete="$emit('delete', person.id)" />
     </ItemActions>
   </Item>
-
-  <EditPersonDialog v-if="person" v-model:open="isEditDialogOpen" :person-id="person.id" />
-  <DeletePersonDialog
-    v-if="person"
-    v-model:open="isDeleteDialogOpen"
-    :person-id="person.id"
-    @deleted="emit('deleted')"
-  />
 </template>

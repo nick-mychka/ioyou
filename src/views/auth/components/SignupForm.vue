@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
+import { useRouter } from 'vue-router';
 import { useMutation, useQueryClient } from '@tanstack/vue-query';
 import { Eye, EyeOff } from 'lucide-vue-next';
 import { some } from 'es-toolkit/compat';
@@ -11,30 +12,33 @@ import { Spinner } from '@/components/ui/spinner';
 import { useAuthToken } from '@/composables/useAuthToken';
 import { setBearerToken } from '@/api';
 import { container } from '@/services/container';
-import { SigninFormSchema, type SigninForm } from '@/types/auth';
+import { SignupFormSchema, type SignupForm } from '@/types/auth';
 
+const router = useRouter();
 const token = useAuthToken();
 
-const formData = ref<SigninForm>({
+const formData = ref<SignupForm>({
+  name: '',
   email: '',
   password: '',
 });
 const showPassword = ref(false);
-const formErrors = ref<{ email?: string; password?: string; general?: string }>({});
+const formErrors = ref<{ name?: string; email?: string; password?: string; general?: string }>({});
 
 const queryClient = useQueryClient();
 const authService = container.getAuthService();
 
 const { mutate, isPending } = useMutation({
-  mutationFn: (credentials: SigninForm) => authService.signin(credentials),
+  mutationFn: (credentials: SignupForm) => authService.signup(credentials),
   onSuccess: async (data) => {
     setBearerToken(data.token);
     token.value = data.token;
     await queryClient.invalidateQueries({ queryKey: ['me'] });
+    router.push({ name: 'home' });
   },
   onError: (error) => {
     formErrors.value = {
-      general: error instanceof Error ? error.message : 'Sign in failed. Please try again.',
+      general: error instanceof Error ? error.message : 'Sign up failed. Please try again.',
     };
   },
 });
@@ -48,10 +52,11 @@ const handleSubmit = () => {
   formErrors.value = {};
 
   // Validate form data
-  const result = SigninFormSchema.safeParse(formData.value);
+  const result = SignupFormSchema.safeParse(formData.value);
   if (!result.success) {
     const fieldErrors = z.flattenError(result.error).fieldErrors;
     formErrors.value = {
+      name: fieldErrors.name?.[0],
       email: fieldErrors.email?.[0],
       password: fieldErrors.password?.[0],
     };
@@ -64,8 +69,16 @@ const handleSubmit = () => {
 
 <template>
   <div class="flex flex-col items-center justify-center gap-6">
-    <h2 class="text-2xl font-bold">Sign In</h2>
+    <h2 class="text-2xl font-bold">Sign Up</h2>
     <form @submit.prevent="handleSubmit" class="flex w-80 flex-col gap-4">
+      <div class="flex flex-col gap-1">
+        <Input
+          placeholder="Name"
+          v-model="formData.name"
+          :aria-invalid="formErrors.name ? 'true' : 'false'"
+        />
+        <p v-if="formErrors.name" class="text-xs text-destructive">{{ formErrors.name }}</p>
+      </div>
       <div class="flex flex-col gap-1">
         <Input
           placeholder="Email"
@@ -97,7 +110,7 @@ const handleSubmit = () => {
       </div>
       <p v-if="formErrors.general" class="text-xs text-destructive">{{ formErrors.general }}</p>
       <Button type="submit" :disabled="isSubmitDisabled">
-        <Spinner v-if="isPending" /> Sign In
+        <Spinner v-if="isPending" /> Sign Up
       </Button>
     </form>
   </div>

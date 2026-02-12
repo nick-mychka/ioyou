@@ -10,10 +10,6 @@ export const personSchema = z.object({
 
 export type Person = z.infer<typeof personSchema>;
 
-export const createPersonSchema = personSchema.omit({ id: true, createdAt: true, updatedAt: true });
-
+export const createPersonSchema = personSchema.pick({ name: true, description: true });
 export type CreatePersonForm = z.infer<typeof createPersonSchema>;
-
-export const updatePersonSchema = createPersonSchema.partial();
-
-export type UpdatePersonForm = z.infer<typeof updatePersonSchema>;
+export type UpdatePersonForm = Partial<CreatePersonForm>;

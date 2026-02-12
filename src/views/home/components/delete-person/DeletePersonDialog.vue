@@ -1,15 +1,12 @@
 <script setup lang="ts">
 import { AlertDialog, AlertDialogContent } from '@/components/ui/alert-dialog';
+
 import DeletePersonDialogContent from './DeletePersonDialogContent.vue';
 
 const open = defineModel<boolean>('open', { required: true });
 
 const { personId } = defineProps<{
-  personId: string;
-}>();
-
-const emit = defineEmits<{
-  deleted: [];
+  personId: string | null;
 }>();
 
 const closeDialog = () => {
@@ -20,11 +17,7 @@ const closeDialog = () => {
 <template>
   <AlertDialog v-model:open="open">
     <AlertDialogContent>
-      <DeletePersonDialogContent
-        :person-id="personId"
-        @close="closeDialog"
-        @deleted="emit('deleted')"
-      />
+      <DeletePersonDialogContent v-if="personId" :personId @close="closeDialog" />
     </AlertDialogContent>
   </AlertDialog>
 </template>

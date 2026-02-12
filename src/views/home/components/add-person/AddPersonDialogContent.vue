@@ -9,24 +9,24 @@ import { Textarea } from '@/components/ui/textarea';
 import { Spinner } from '@/components/ui/spinner';
 import { useCreatePerson } from '@/composables/usePeople';
 
-const { onClose } = defineProps<{
-  onClose: () => void;
+const emit = defineEmits<{
+  close: [];
 }>();
 
 const {
   mutate: create,
-  isPending: isCreating,
+  isPending,
   error,
 } = useCreatePerson({
   onSuccess: () => {
-    onClose();
+    emit('close');
   },
 });
 
 const name = ref('');
 const description = ref('');
 
-const isSubmitDisabled = computed(() => isCreating.value || name.value.trim() === '');
+const isSubmitDisabled = computed(() => isPending.value || name.value.trim() === '');
 
 const handleAdd = () => {
   if (isSubmitDisabled.value) return;
@@ -62,9 +62,9 @@ const handleAdd = () => {
   </form>
 
   <DialogFooter>
-    <Button variant="outline" @click="onClose">Cancel</Button>
+    <Button variant="outline" @click="emit('close')">Cancel</Button>
     <Button type="submit" form="add-person-form" :disabled="isSubmitDisabled">
-      <Spinner v-if="isCreating" /> Add
+      <Spinner v-if="isPending" /> Add
     </Button>
   </DialogFooter>
 </template>

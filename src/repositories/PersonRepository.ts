@@ -23,7 +23,7 @@ export class PersonRepository extends BaseRepository {
   }
 
   update(id: string, data: UpdatePersonForm): Promise<{ person: Person }> {
-    return this.patch(`${this.basePath}/${id}`, data);
+    return this.put(`${this.basePath}/${id}`, data);
   }
 
   remove(id: string): Promise<void> {
