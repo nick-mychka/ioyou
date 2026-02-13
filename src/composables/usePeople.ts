@@ -59,7 +59,7 @@ export const useUpdatePerson = ({ onSuccess }: { onSuccess?: () => void } = {}) 
 
 export const useRemovePerson = ({ onSuccess }: { onSuccess?: () => void } = {}) => {
   const queryClient = useQueryClient();
-  const { selectedPersonId, resetPersonId } = useStore();
+  const store = useStore();
   const personService = container.getPersonService();
 
   return useMutation({
@@ -67,7 +67,7 @@ export const useRemovePerson = ({ onSuccess }: { onSuccess?: () => void } = {}) 
     onSuccess: async (_, id) => {
       toast.success('Person deleted successfully');
 
-      if (selectedPersonId === id) resetPersonId();
+      if (store.selectedPersonId === id) store.resetPersonId();
       await queryClient.invalidateQueries({ queryKey: [QUERY_KEY] });
       onSuccess?.();
     },

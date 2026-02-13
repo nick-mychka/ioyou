@@ -2,7 +2,6 @@
 import { ref, computed, watch } from 'vue';
 import { DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Field, FieldLabel } from '@/components/ui/field';
 import { Textarea } from '@/components/ui/textarea';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
@@ -18,14 +17,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Calendar } from '@/components/ui/calendar';
 import { CalendarIcon, ChevronDown } from 'lucide-vue-next';
 import { CurrencyCombobox, ManageCurrencyDialog } from '@/components/currency';
-import {
-  DateFormatter,
-  type CalendarDate,
-  parseDate,
-  today,
-  getLocalTimeZone,
-} from '@internationalized/date';
-import type { DateValue } from 'reka-ui';
+import { DateFormatter, type CalendarDate, today, getLocalTimeZone } from '@internationalized/date';
 import { createRecordSchema } from '@/types/record';
 
 const { personId } = defineProps<{
@@ -84,7 +76,7 @@ const handleAdd = () => {
   }
 
   // Format dates properly to ISO strings
-  const formatDateToISO = (date: any): string => {
+  const formatDateToISO = (date: unknown): string => {
     const jsDate = date.toDate(getLocalTimeZone());
     return jsDate.toISOString().split('T')[0]; // YYYY-MM-DD format
   };
@@ -132,14 +124,14 @@ const handleAdd = () => {
     <ToggleGroup v-model="kind" type="single" class="w-full" aria-label="Select record type">
       <ToggleGroupItem
         value="borrow"
-        class="flex-1 transition-all data-[state=on]:bg-primary data-[state=on]:text-primary-foreground data-[state=on]:font-semibold data-[state=on]:shadow-sm"
+        class="flex-1 transition-all data-[state=on]:bg-primary data-[state=on]:font-semibold data-[state=on]:text-primary-foreground data-[state=on]:shadow-sm"
         aria-label="Borrow"
       >
         Borrow
       </ToggleGroupItem>
       <ToggleGroupItem
         value="lend"
-        class="flex-1 transition-all data-[state=on]:bg-primary data-[state=on]:text-primary-foreground data-[state=on]:font-semibold data-[state=on]:shadow-sm"
+        class="flex-1 transition-all data-[state=on]:bg-primary data-[state=on]:font-semibold data-[state=on]:text-primary-foreground data-[state=on]:shadow-sm"
         aria-label="Lend"
       >
         Lend

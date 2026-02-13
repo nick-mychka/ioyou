@@ -20,7 +20,7 @@ const dialogPersonId = ref<string | null>(null);
 const isEditDialogOpen = ref(false);
 const isDeleteDialogOpen = ref(false);
 
-const { selectedPersonId, togglePersonId } = useStore();
+const store = useStore();
 
 const openEditDialog = (personId: string) => {
   dialogPersonId.value = personId;
@@ -46,8 +46,8 @@ const openDeleteDialog = (personId: string) => {
         <template v-for="(person, index) in data" :key="person.id">
           <PeopleListItem
             :person="person"
-            :isSelected="selectedPersonId === person.id"
-            @click="togglePersonId(person.id)"
+            :isSelected="store.selectedPersonId === person.id"
+            @click="store.togglePersonId(person.id)"
             @edit="openEditDialog"
             @delete="openDeleteDialog"
           />

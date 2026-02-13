@@ -9,7 +9,7 @@ import { Separator } from '@/components/ui/separator';
 import { usePerson } from '@/composables/usePeople';
 import { formatDate } from '@/utils/dates';
 
-import { AddRecordDialog } from '../add-record';
+import AddRecordDialog from '../add-record/AddRecordDialog.vue';
 
 const { personId } = defineProps<{
   personId: string;
