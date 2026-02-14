@@ -9,9 +9,9 @@ import PeopleListItem from './PeopleListItem.vue';
 import EditPersonDialog from '../edit-person/EditPersonDialog.vue';
 import DeletePersonDialog from '../delete-person/DeletePersonDialog.vue';
 
-const { data, isPending } = defineProps<{
+const { data, isLoading } = defineProps<{
   data: Person[] | undefined;
-  isPending: boolean;
+  isLoading: boolean;
 }>();
 
 const skeletonLimit = 2;
@@ -36,16 +36,16 @@ const openDeleteDialog = (personId: string) => {
 <template>
   <div class="flex w-full flex-col gap-6 px-2">
     <ItemGroup>
-      <template v-if="isPending">
+      <template v-if="isLoading">
         <template v-for="index in skeletonLimit" :key="index">
-          <PeopleListItem isPending />
+          <PeopleListItem isLoading />
           <ItemSeparator v-if="index < skeletonLimit" />
         </template>
       </template>
       <template v-else>
         <template v-for="(person, index) in data" :key="person.id">
           <PeopleListItem
-            :person="person"
+            :person
             :isSelected="store.selectedPersonId === person.id"
             @click="store.togglePersonId(person.id)"
             @edit="openEditDialog"

@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { userSchema } from './user';
+import { UserSchema } from './user';
 
 export const SigninFormSchema = z.object({
   email: z.email(),
@@ -16,7 +16,7 @@ export const SignupFormSchema = z.object({
 export type SignupForm = z.infer<typeof SignupFormSchema>;
 
 export const AuthResponseSchema = z.object({
-  user: userSchema,
+  user: UserSchema,
   token: z.string(),
 });
 

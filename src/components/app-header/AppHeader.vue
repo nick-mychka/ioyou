@@ -3,8 +3,10 @@ import { LogOut } from 'lucide-vue-next';
 
 import { Button } from '@/components/ui/button';
 import { useAuthToken } from '@/composables/useAuthToken';
+import { useCurrentUser } from '@/composables/useCurrentUser';
 
 const token = useAuthToken();
+const { data: user } = useCurrentUser();
 
 const handleLogout = () => {
   token.value = null;
@@ -15,8 +17,11 @@ const handleLogout = () => {
   <header class="flex items-center justify-between border-b border-border px-6 py-4">
     <h1 class="text-xl font-bold">I<span class="text-primary">O</span>You</h1>
 
-    <Button variant="ghost" size="sm" @click="handleLogout">
-      <LogOut class="size-4" />
-    </Button>
+    <div class="flex items-center gap-4">
+      <h6 class="text-sm">{{ user?.name }}</h6>
+      <Button variant="ghost" size="sm" @click="handleLogout">
+        <LogOut class="size-4" />
+      </Button>
+    </div>
   </header>
 </template>

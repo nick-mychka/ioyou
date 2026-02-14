@@ -8,7 +8,7 @@ import PeopleList from './PeopleList.vue';
 import PeopleEmpty from './PeopleEmpty.vue';
 import AddPersonButton from '../add-person/AddPersonButton.vue';
 
-const { data, isPending, isSuccess, error } = usePeople();
+const { data, isLoading, isSuccess, error } = usePeople();
 
 const peoplePresent = computed(() => {
   return isSuccess.value && data.value && data.value.length > 0;
@@ -17,9 +17,9 @@ const peoplePresent = computed(() => {
 
 <template>
   <section class="flex flex-col">
-    <template v-if="isPending || peoplePresent">
+    <template v-if="isLoading || peoplePresent">
       <header class="flex items-center justify-between px-6 py-8">
-        <template v-if="isPending">
+        <template v-if="isLoading">
           <Skeleton class="h-8 w-19" />
           <Skeleton class="h-9 w-31" />
         </template>
@@ -28,7 +28,7 @@ const peoplePresent = computed(() => {
           <AddPersonButton />
         </template>
       </header>
-      <PeopleList :data="data" :isPending="isPending" />
+      <PeopleList :data :isLoading />
     </template>
     <!-- TODO: Design error state -->
     <p v-else-if="error">{{ error.message }}</p>

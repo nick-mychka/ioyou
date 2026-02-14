@@ -96,15 +96,17 @@ const handleSubmit = () => {
             :aria-invalid="formErrors.password ? 'true' : 'false'"
             class="pr-10"
           />
-          <button
+          <Button
             type="button"
-            class="absolute top-1/2 right-3 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-            @click="showPassword = !showPassword"
+            variant="ghost"
+            size="icon-sm"
+            class="absolute top-1/2 right-2 -translate-y-1/2"
             :aria-label="showPassword ? 'Hide password' : 'Show password'"
+            @click="showPassword = !showPassword"
           >
             <EyeOff v-if="showPassword" class="size-4" />
             <Eye v-else class="size-4" />
-          </button>
+          </Button>
         </div>
         <p v-if="formErrors.password" class="text-xs text-destructive">{{ formErrors.password }}</p>
       </div>

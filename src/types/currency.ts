@@ -1,15 +1,15 @@
 import { z } from 'zod';
 
-export const currencySchema = z.object({
+export const CurrencySchema = z.object({
   id: z.number(),
   name: z.string(),
   is_default: z.boolean(),
 });
 
-export type Currency = z.infer<typeof currencySchema>;
+export type Currency = z.infer<typeof CurrencySchema>;
 
-export const createCurrencySchema = currencySchema.omit({
+export const CreateCurrencySchema = CurrencySchema.omit({
   id: true,
 });
 
-export type CreateCurrencyForm = z.infer<typeof createCurrencySchema>;
+export type CreateCurrencyForm = z.infer<typeof CreateCurrencySchema>;

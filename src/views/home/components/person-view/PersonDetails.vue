@@ -1,15 +1,25 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import { Calendar, Plus } from 'lucide-vue-next';
+import { Plus } from 'lucide-vue-next';
 
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Separator } from '@/components/ui/separator';
+import {
+  Item,
+  ItemActions,
+  ItemContent,
+  ItemDescription,
+  ItemMedia,
+  ItemTitle,
+} from '@/components/ui/item';
 import { usePerson } from '@/composables/usePeople';
-import { formatDate } from '@/utils/dates';
 
+import PeopleActions from '../people/PeopleActions.vue';
 import AddRecordDialog from '../add-record/AddRecordDialog.vue';
+import EditPersonDialog from '../edit-person/EditPersonDialog.vue';
+import DeletePersonDialog from '../delete-person/DeletePersonDialog.vue';
 
 const { personId } = defineProps<{
   personId: string;
@@ -17,65 +27,52 @@ const { personId } = defineProps<{
 
 const { data: person, isLoading } = usePerson(personId);
 const isAddRecordDialogOpen = ref(false);
+const isEditDialogOpen = ref(false);
+const isDeleteDialogOpen = ref(false);
 </script>
 
 <template>
   <div class="flex flex-col gap-6">
-    <div class="flex items-center justify-between">
-      <h3 class="text-sm font-medium text-muted-foreground">Details</h3>
-    </div>
-
-    <template v-if="isLoading">
-      <div class="flex items-center gap-4">
-        <Skeleton class="h-16 w-16 rounded-full" />
-        <div class="flex flex-col gap-2">
-          <Skeleton class="h-8 w-48" />
-          <Skeleton class="h-4 w-32" />
-        </div>
-      </div>
-      <Skeleton class="h-20 w-full" />
-      <Separator />
-      <div class="flex flex-col gap-3">
-        <Skeleton class="h-5 w-full" />
-        <Skeleton class="h-5 w-full" />
-      </div>
-    </template>
-
-    <template v-else-if="person">
-      <div class="flex items-center gap-4">
-        <Avatar class="h-16 w-16">
-          <AvatarFallback class="text-2xl">
-            {{ person.name.charAt(0) }}
-          </AvatarFallback>
+    <Item>
+      <ItemMedia>
+        <Skeleton v-if="isLoading || !person" class="size-16 rounded-full" />
+        <Avatar v-else class="size-16">
+          <!-- <AvatarImage :src="person.avatar" class="grayscale" /> -->
+          <AvatarFallback class="text-2xl">{{ person.name.charAt(0) }}</AvatarFallback>
         </Avatar>
-        <div class="flex flex-col">
-          <h2 class="text-2xl font-semibold">{{ person.name }}</h2>
-        </div>
-      </div>
+      </ItemMedia>
+      <ItemContent>
+        <template v-if="isLoading || !person">
+          <Skeleton class="h-8 w-32 rounded-md" />
+          <Skeleton class="h-5.25 w-48 rounded-md" />
+        </template>
+        <template v-else>
+          <ItemTitle class="text-2xl">{{ person.name }}</ItemTitle>
+          <ItemDescription>{{ person.description }}</ItemDescription>
+        </template>
+      </ItemContent>
+      <ItemActions v-if="!isLoading && person" class="gap-0 self-start" @click.stop>
+        <PeopleActions @edit="isEditDialogOpen = true" @delete="isDeleteDialogOpen = true" />
+      </ItemActions>
+    </Item>
 
-      <div v-if="person.description" class="text-sm text-muted-foreground">
-        {{ person.description }}
-      </div>
+    <Separator />
 
-      <Button @click="isAddRecordDialogOpen = true" class="w-full">
-        <Plus class="h-4 w-4" />
-        Add Record
-      </Button>
+    <Item>
+      <ItemContent>
+        <ItemTitle class="text-xl font-normal">Records</ItemTitle>
+      </ItemContent>
+      <ItemActions>
+        <Button @click="isAddRecordDialogOpen = true" class="w-full">
+          <Plus />
+          Add Record
+        </Button>
+      </ItemActions>
+    </Item>
 
-      <Separator />
-
-      <div class="flex flex-col gap-3 text-sm">
-        <div class="flex items-center gap-2 text-muted-foreground">
-          <Calendar class="h-4 w-4" />
-          <span>Created: {{ formatDate(person.createdAt) }}</span>
-        </div>
-        <div class="flex items-center gap-2 text-muted-foreground">
-          <Calendar class="h-4 w-4" />
-          <span>Updated: {{ formatDate(person.updatedAt) }}</span>
-        </div>
-      </div>
-    </template>
-
-    <AddRecordDialog v-if="person" v-model:open="isAddRecordDialogOpen" :person-id="personId" />
+    <AddRecordDialog v-if="person" v-model:open="isAddRecordDialogOpen" :personId />
+    <EditPersonDialog v-model:open="isEditDialogOpen" :person />
+    <!-- TODO: It is possible to delete Person so far, but need to add more restrictions in the future -->
+    <DeletePersonDialog v-model:open="isDeleteDialogOpen" :personId />
   </div>
 </template>

@@ -5,7 +5,7 @@ import {
   type AuthResponse,
   type SigninForm,
 } from '@/types/auth';
-import { userSchema, type User } from '@/types/user';
+import { UserSchema, type User } from '@/types/user';
 
 import { BaseService } from './BaseService';
 
@@ -29,7 +29,7 @@ class AuthService extends BaseService {
 
   async me(): Promise<User> {
     const response = await this.authRepository.me();
-    return userSchema.parse(response.user);
+    return UserSchema.parse(response.user);
   }
 }
 

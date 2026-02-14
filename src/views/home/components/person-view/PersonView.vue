@@ -8,7 +8,7 @@ const store = useStore();
 </script>
 
 <template>
-  <section class="flex flex-col px-6 py-8">
+  <section class="flex flex-col px-2 py-3">
     <PersonUnselected v-if="!store.selectedPersonId" />
     <PersonDetails v-else :key="store.selectedPersonId" :personId="store.selectedPersonId" />
   </section>

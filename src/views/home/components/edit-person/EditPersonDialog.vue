@@ -18,7 +18,7 @@ const closeDialog = () => {
 <template>
   <Dialog v-model:open="open">
     <DialogContent>
-      <EditPersonDialogContent v-if="person" :person="person" @close="closeDialog" />
+      <EditPersonDialogContent v-if="person" :person @close="closeDialog" />
     </DialogContent>
   </Dialog>
 </template>

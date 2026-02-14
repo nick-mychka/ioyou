@@ -18,7 +18,7 @@ import { Calendar } from '@/components/ui/calendar';
 import { CalendarIcon, ChevronDown } from 'lucide-vue-next';
 import { CurrencyCombobox, ManageCurrencyDialog } from '@/components/currency';
 import { DateFormatter, type CalendarDate, today, getLocalTimeZone } from '@internationalized/date';
-import { createRecordSchema } from '@/types/record';
+import { CreatePersonRecordSchema } from '@/types/personRecord';
 
 const { personId } = defineProps<{
   personId: string;
@@ -102,7 +102,7 @@ const handleAdd = () => {
 
   try {
     // Validate with Zod schema
-    const validated = createRecordSchema.parse(formData);
+    const validated = CreatePersonRecordSchema.parse(formData);
     console.log('Validated record data:', validated);
 
     // TODO: Send to API
@@ -178,7 +178,7 @@ const handleAdd = () => {
             ]"
             aria-label="Select loan date"
           >
-            <CalendarIcon class="mr-2 h-4 w-4" />
+            <CalendarIcon class="mr-2" />
             {{ loanDate ? df.format(loanDate.toDate(getLocalTimeZone())) : 'Pick a date' }}
           </Button>
         </PopoverTrigger>
@@ -206,7 +206,7 @@ const handleAdd = () => {
         >
           Advanced Fields
           <ChevronDown
-            class="h-4 w-4 transition-transform duration-200"
+            class="transition-transform duration-200"
             :class="{ 'rotate-180': isAdvancedOpen }"
             aria-hidden="true"
           />
@@ -227,7 +227,7 @@ const handleAdd = () => {
                 ]"
                 aria-label="Select due date"
               >
-                <CalendarIcon class="mr-2 h-4 w-4" />
+                <CalendarIcon class="mr-2" />
                 {{
                   dueDate ? df.format(dueDate.toDate(getLocalTimeZone())) : 'Pick a date (optional)'
                 }}
