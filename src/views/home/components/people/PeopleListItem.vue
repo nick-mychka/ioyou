@@ -23,7 +23,7 @@ const {
   isSelected?: boolean;
 }>();
 
-defineEmits<{
+const emit = defineEmits<{
   edit: [personId: string];
   delete: [personId: string];
 }>();
@@ -31,9 +31,9 @@ defineEmits<{
 
 <template>
   <Item
-    class="cursor-pointer transition-all"
+    class="cursor-pointer transition-all hover:bg-primary/5"
     :class="{
-      'bg-primary/5 shadow-lg ring-2 shadow-primary/20 ring-primary': isSelected,
+      'bg-primary/5 shadow-lg ring-2 shadow-primary/12 ring-primary/25': isSelected,
     }"
   >
     <ItemMedia>
@@ -50,11 +50,11 @@ defineEmits<{
       </template>
       <template v-else>
         <ItemTitle>{{ person.name }}</ItemTitle>
-        <ItemDescription>{{ person.description }}</ItemDescription>
+        <ItemDescription class="line-clamp-1">{{ person.description }}</ItemDescription>
       </template>
     </ItemContent>
-    <ItemActions v-if="!isLoading && person" class="gap-0" @click.stop>
-      <PeopleActions @edit="$emit('edit', person.id)" @delete="$emit('delete', person.id)" />
+    <ItemActions v-if="!isLoading && person" class="gap-0 self-start" @click.stop>
+      <PeopleActions @edit="emit('edit', person.id)" @delete="emit('delete', person.id)" />
     </ItemActions>
   </Item>
 </template>

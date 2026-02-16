@@ -9,7 +9,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 
-defineEmits<{
+const emit = defineEmits<{
   edit: [];
   delete: [];
 }>();
@@ -23,8 +23,8 @@ defineEmits<{
       </Button>
     </DropdownMenuTrigger>
     <DropdownMenuContent align="end">
-      <DropdownMenuItem @click="$emit('edit')"> <Edit /> Edit </DropdownMenuItem>
-      <DropdownMenuItem variant="destructive" @click="$emit('delete')">
+      <DropdownMenuItem @click="emit('edit')"> <Edit /> Edit </DropdownMenuItem>
+      <DropdownMenuItem variant="destructive" @click="emit('delete')">
         <Trash2 /> Delete
       </DropdownMenuItem>
     </DropdownMenuContent>

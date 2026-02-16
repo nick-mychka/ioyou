@@ -1,16 +1,17 @@
 import { z } from 'zod';
 
+const DecimalString = z.string().transform((val) => parseFloat(val));
 export const PersonRecordSchema = z.object({
   id: z.uuid(),
-  amount: z.string(),
+  amount: DecimalString,
   currencyId: z.uuid(),
   note: z.string().nullable(),
-  loanDate: z.iso.date(),
-  dueDate: z.iso.date().nullable(),
+  loanDate: z.iso.datetime(),
+  dueDate: z.iso.datetime().nullable(),
   kind: z.enum(['loan', 'debt']),
   statusId: z.uuid(),
-  interestRate: z.string().nullable(),
-  penalty: z.string().nullable(),
+  interestRate: DecimalString.nullable(),
+  penalty: DecimalString.nullable(),
   personId: z.uuid(),
 });
 
@@ -23,7 +24,6 @@ export const CreatePersonRecordSchema = PersonRecordSchema.pick({
   loanDate: true,
   dueDate: true,
   kind: true,
-  statusId: true,
   interestRate: true,
   penalty: true,
 });

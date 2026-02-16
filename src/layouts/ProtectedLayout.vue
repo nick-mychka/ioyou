@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { AppHeader } from '@/components/app-header';
+import AppHeader from '@/components/app-header/AppHeader.vue';
 
 import { useAppBootstrap } from '@/composables/useAppBootstrap';
 
