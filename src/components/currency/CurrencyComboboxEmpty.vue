@@ -3,8 +3,10 @@ import { computed } from 'vue';
 import { Plus } from 'lucide-vue-next';
 
 import { Button } from '@/components/ui/button';
-import { useCommand } from '@/components/ui/command';
+import { Spinner } from '@/components/ui/spinner';
+import { CommandEmpty, useCommand } from '@/components/ui/command';
 import { useCreateCurrency } from '@/composables/useCurrencies';
+import type { Currency } from '@/types/currency';
 
 const emit = defineEmits<{
   created: [currencyId: string];
@@ -12,26 +14,28 @@ const emit = defineEmits<{
 
 const { filterState } = useCommand();
 
-const isRender = computed(() => !!filterState.search && filterState.filtered.count === 0);
 const currencyCode = computed(() => filterState.search.toUpperCase());
 
-const { mutateAsync: createCurrency, isPending } = useCreateCurrency();
+const { mutate: createCurrency, isPending } = useCreateCurrency({
+  onSuccess: (currency: Currency) => {
+    emit('created', currency.id);
+  },
+});
 
 const handleCreate = async () => {
   if (isPending.value) return;
 
-  const currency = await createCurrency({ code: currencyCode.value });
-  filterState.search = '';
-  emit('created', currency.id);
+  createCurrency({ code: currencyCode.value });
 };
 </script>
 
 <template>
-  <div v-if="isRender" class="flex flex-col items-center gap-2 py-6 text-center text-sm">
+  <CommandEmpty class="flex flex-col items-center gap-3 text-center">
     <p class="text-muted-foreground">No currency found.</p>
     <Button variant="outline" size="sm" :disabled="isPending" @click="handleCreate">
-      <Plus />
+      <Spinner v-if="isPending" />
+      <Plus v-else />
       Add
     </Button>
-  </div>
+  </CommandEmpty>
 </template>

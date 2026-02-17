@@ -32,7 +32,7 @@ const selectedCurrency = computed(() => {
   return currencies.value?.find((c) => c.id === value)?.code ?? 'Select currency';
 });
 
-const onCurrencyCreated = (currencyId: string) => {
+const onCurrencySelected = (currencyId: string) => {
   emit('change', currencyId);
   isOpen.value = false;
 };
@@ -55,15 +55,15 @@ const onCurrencyCreated = (currencyId: string) => {
       <Command>
         <CommandInput class="h-9" placeholder="Search currency..." />
         <CommandList>
-          <CurrencyComboboxEmpty @created="onCurrencyCreated" />
+          <CurrencyComboboxEmpty @created="onCurrencySelected" />
           <CommandGroup>
             <CommandItem
               v-for="currency in currencies"
               :key="currency.id"
               :value="currency.id"
-              @select="emit('change', currency.id)"
+              @select="onCurrencySelected(currency.id)"
             >
-              {{ currency.code || 'cck' }}
+              {{ currency.code }}
               <CheckIcon
                 :class="cn('ml-auto', value === currency.id ? 'opacity-100' : 'opacity-0')"
               />

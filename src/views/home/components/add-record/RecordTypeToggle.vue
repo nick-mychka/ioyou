@@ -1,18 +1,14 @@
 <script lang="ts" setup>
-import { ref, watch } from 'vue';
+import { watch } from 'vue';
 import { BanknoteArrowDown, BanknoteArrowUp } from 'lucide-vue-next';
 
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 
 const kind = defineModel<'debt' | 'loan'>('kind', { required: true });
 
-const previousKind = ref(kind.value);
-
-watch(kind, (newVal) => {
+watch(kind, (newVal, oldVal) => {
   if (!newVal) {
-    kind.value = previousKind.value;
-  } else {
-    previousKind.value = newVal;
+    kind.value = oldVal;
   }
 });
 </script>

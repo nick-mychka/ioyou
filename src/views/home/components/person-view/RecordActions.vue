@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { Edit, EllipsisVertical, Trash2 } from 'lucide-vue-next';
+import { EllipsisVertical, Trash2 } from 'lucide-vue-next';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -23,7 +23,7 @@ const emit = defineEmits<{
       </Button>
     </DropdownMenuTrigger>
     <DropdownMenuContent align="end">
-      <DropdownMenuItem @click="emit('edit')"> <Edit /> Edit </DropdownMenuItem>
+      <!-- <DropdownMenuItem @click="emit('edit')"> <Edit /> Edit </DropdownMenuItem> -->
       <DropdownMenuItem variant="destructive" @click="emit('delete')">
         <Trash2 /> Delete
       </DropdownMenuItem>
