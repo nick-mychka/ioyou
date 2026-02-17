@@ -18,6 +18,9 @@ const isLoginView = ref(true);
           {{ isLoginView ? 'Sign Up' : 'Sign In' }}
         </span>
       </div>
+      <div v-if="isLoginView" class="text-center text-xs text-muted-foreground">
+        <RouterLink to="/recovery" class="text-primary">Forgot Password?</RouterLink>
+      </div>
     </div>
   </div>
 </template>
