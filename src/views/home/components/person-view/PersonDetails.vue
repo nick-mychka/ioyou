@@ -18,11 +18,11 @@ import { usePerson } from '@/composables/usePeople';
 import { useRecords } from '@/composables/useRecords';
 
 import PeopleActions from '../people/PeopleActions.vue';
+import RecordCard from './RecordCard.vue';
+import RecordsEmpty from './RecordsEmpty.vue';
 import AddRecordDialog from '../add-record/AddRecordDialog.vue';
 import EditPersonDialog from '../edit-person/EditPersonDialog.vue';
 import DeletePersonDialog from '../delete-person/DeletePersonDialog.vue';
-import { useCurrencyCode } from '@/composables/useCurrencies';
-import dayjs from 'dayjs';
 
 const { personId } = defineProps<{
   personId: string;
@@ -30,7 +30,6 @@ const { personId } = defineProps<{
 
 const { data: person, isLoading } = usePerson(personId);
 const { data: records, isLoading: isRecordsLoading } = useRecords(personId);
-const getCurrencyCode = useCurrencyCode();
 
 const isAddRecordDialogOpen = ref(false);
 const isEditDialogOpen = ref(false);
@@ -68,7 +67,7 @@ const isDeleteDialogOpen = ref(false);
       <ItemContent>
         <ItemTitle class="text-xl font-normal">Records</ItemTitle>
       </ItemContent>
-      <ItemActions>
+      <ItemActions v-if="records && records.length > 0">
         <Button @click="isAddRecordDialogOpen = true" class="w-full">
           <Plus />
           Add Record
@@ -77,17 +76,14 @@ const isDeleteDialogOpen = ref(false);
     </Item>
 
     <div v-if="isRecordsLoading">Loading records...</div>
-    <div
-      v-else-if="records && records.length === 0"
-      class="text-center text-sm text-muted-foreground"
-    >
-      No records found.
-    </div>
-    <div v-else class="flex flex-col gap-4">
-      <div v-for="record in records" :key="record.id">
-        {{ dayjs(record.loanDate).format('MMMM DD, YYYY') }} - {{ record.amount }}
-        {{ getCurrencyCode(record.currencyId) }}
-      </div>
+    <RecordsEmpty v-else-if="records && records.length === 0" :personId />
+    <div v-else class="grid grid-cols-2 gap-4">
+      <RecordCard
+        v-for="record in records"
+        :key="record.id"
+        :record
+        :personId
+      />
     </div>
 
     <AddRecordDialog v-if="person" v-model:open="isAddRecordDialogOpen" :personId />

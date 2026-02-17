@@ -6,7 +6,6 @@ import { Button } from '@/components/ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import {
   Command,
-  CommandEmpty,
   CommandGroup,
   CommandInput,
   CommandItem,
@@ -14,6 +13,8 @@ import {
 } from '@/components/ui/command';
 import { cn } from '@/utils/shadcn';
 import { useCurrencies } from '@/composables/useCurrencies';
+
+import CurrencyComboboxEmpty from './CurrencyComboboxEmpty.vue';
 
 const { value } = defineProps<{
   value: string;
@@ -28,9 +29,13 @@ const isOpen = ref(false);
 const { data: currencies } = useCurrencies();
 
 const selectedCurrency = computed(() => {
-  console.log('currencies', currencies.value);
   return currencies.value?.find((c) => c.id === value)?.code ?? 'Select currency';
 });
+
+const onCurrencyCreated = (currencyId: string) => {
+  emit('change', currencyId);
+  isOpen.value = false;
+};
 </script>
 
 <template>
@@ -50,7 +55,7 @@ const selectedCurrency = computed(() => {
       <Command>
         <CommandInput class="h-9" placeholder="Search currency..." />
         <CommandList>
-          <CommandEmpty>No currency found.</CommandEmpty>
+          <CurrencyComboboxEmpty @created="onCurrencyCreated" />
           <CommandGroup>
             <CommandItem
               v-for="currency in currencies"
