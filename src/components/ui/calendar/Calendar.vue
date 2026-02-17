@@ -55,7 +55,7 @@ const yearRange = computed(() => {
         props?.minValue ??
         (toRaw(props.placeholder) ?? props.defaultPlaceholder ?? today(getLocalTimeZone())).cycle(
           'year',
-          -100
+          -10
         ),
 
       end:
