@@ -9,6 +9,7 @@ import { Field, FieldLabel } from '@/components/ui/field';
 import { DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import CurrencyCombobox from '@/components/currency/CurrencyCombobox.vue';
+import { Spinner } from '@/components/ui/spinner';
 import { useCreateRecord } from '@/composables/useRecords';
 
 import RecordTypeToggle from './RecordTypeToggle.vue';
@@ -23,7 +24,7 @@ const emit = defineEmits<{
   close: [];
 }>();
 
-const { mutate: createRecord } = useCreateRecord(personId, {
+const { mutate: createRecord, isPending } = useCreateRecord(personId, {
   onSuccess: () => {
     emit('close');
   },
@@ -43,7 +44,7 @@ const interestRate = ref<number | null>(null);
 const penalty = ref<number | null>(null);
 
 const isSubmitDisabled = computed(() => {
-  return !amount.value || amount.value <= 0 || !currency.value.trim() || !loanDate.value;
+  return isPending.value || !amount.value || amount.value <= 0 || !currency.value.trim() || !loanDate.value;
 });
 
 const handleAdd = () => {
@@ -144,7 +145,7 @@ const handleAdd = () => {
   <DialogFooter class="border-t pt-4">
     <Button variant="outline" @click="emit('close')" class="min-w-24">Cancel</Button>
     <Button type="submit" form="add-record-form" :disabled="isSubmitDisabled" class="min-w-32">
-      Add
+      <Spinner v-if="isPending" /> Add
     </Button>
   </DialogFooter>
 </template>
