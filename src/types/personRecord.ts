@@ -1,6 +1,10 @@
 import { z } from 'zod';
 
+const RecordKindSchema = z.enum(['loan', 'debt']);
+export type RecordKind = z.infer<typeof RecordKindSchema>;
+
 const DecimalString = z.string().transform((val) => parseFloat(val));
+
 export const PersonRecordSchema = z.object({
   id: z.uuid(),
   amount: DecimalString,
@@ -8,7 +12,7 @@ export const PersonRecordSchema = z.object({
   note: z.string().nullable(),
   loanDate: z.iso.datetime(),
   dueDate: z.iso.datetime().nullable(),
-  kind: z.enum(['loan', 'debt']),
+  kind: RecordKindSchema,
   statusId: z.uuid(),
   interestRate: DecimalString.nullable(),
   penalty: DecimalString.nullable(),
@@ -30,3 +34,7 @@ export const CreatePersonRecordSchema = PersonRecordSchema.pick({
 
 export type CreatePersonRecordForm = z.infer<typeof CreatePersonRecordSchema>;
 export type UpdatePersonRecordForm = Partial<CreatePersonRecordForm>;
+
+export type PersonRecordTotal = Pick<PersonRecord, 'kind' | 'currencyId'> & {
+  total: number;
+};

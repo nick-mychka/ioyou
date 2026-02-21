@@ -44,7 +44,13 @@ const interestRate = ref<number | null>(null);
 const penalty = ref<number | null>(null);
 
 const isSubmitDisabled = computed(() => {
-  return isPending.value || !amount.value || amount.value <= 0 || !currency.value.trim() || !loanDate.value;
+  return (
+    isPending.value ||
+    !amount.value ||
+    amount.value <= 0 ||
+    !currency.value.trim() ||
+    !loanDate.value
+  );
 });
 
 const handleAdd = () => {

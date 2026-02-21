@@ -3,13 +3,7 @@ import { ref, computed } from 'vue';
 import dayjs from 'dayjs';
 import { CalendarClock } from 'lucide-vue-next';
 
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-  CardAction,
-} from '@/components/ui/card';
+import { Card, CardHeader, CardTitle, CardDescription, CardAction } from '@/components/ui/card';
 import { useCurrencyCode } from '@/composables/useCurrencies';
 import { formatAmount } from '@/utils/numbers';
 import type { PersonRecord } from '@/types/personRecord';
@@ -35,7 +29,7 @@ const isDeleteDialogOpen = ref(false);
 <template>
   <Card
     :class="[
-      'gap-0 py-0 overflow-hidden border-l-4',
+      'gap-0 overflow-hidden border-l-4 py-0',
       record.kind === 'debt' ? 'border-l-red-400' : 'border-l-green-400',
     ]"
   >
@@ -53,17 +47,16 @@ const isDeleteDialogOpen = ref(false);
     </CardHeader>
     <div
       v-if="record.dueDate"
-      class="flex items-center gap-1 text-xs px-6 pb-3"
-      :class="isOverdue ? 'text-orange-500 font-medium' : 'text-muted-foreground'"
+      class="flex items-center gap-1 px-6 pb-3 text-xs"
+      :class="isOverdue ? 'font-medium text-orange-500' : 'text-muted-foreground'"
     >
       <CalendarClock class="size-3 shrink-0" />
-      <span>{{ isOverdue ? 'Overdue' : 'Due' }} {{ dayjs(record.dueDate).format('MMM DD, YYYY') }}</span>
+      <span
+        >{{ isOverdue ? 'Overdue' : 'Due' }}
+        {{ dayjs(record.dueDate).format('MMM DD, YYYY') }}</span
+      >
     </div>
   </Card>
 
-  <DeleteRecordDialog
-    v-model:open="isDeleteDialogOpen"
-    :personId
-    :recordId="record.id"
-  />
+  <DeleteRecordDialog v-model:open="isDeleteDialogOpen" :personId :recordId="record.id" />
 </template>

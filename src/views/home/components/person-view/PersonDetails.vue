@@ -33,16 +33,10 @@ const { personId } = defineProps<{
 
 const { data: person, isLoading } = usePerson(personId);
 const { data: records, isLoading: isRecordsLoading } = useRecords(personId);
-const totals = useRecordTotals(records);
-const sortByDate = (a: { loanDate: string }, b: { loanDate: string }) =>
-  new Date(b.loanDate).getTime() - new Date(a.loanDate).getTime();
 
-const lendRecords = computed(() =>
-  records.value?.filter((r) => r.kind === 'loan').sort(sortByDate) ?? [],
-);
-const borrowRecords = computed(() =>
-  records.value?.filter((r) => r.kind === 'debt').sort(sortByDate) ?? [],
-);
+const totals = useRecordTotals(records);
+const lendRecords = computed(() => records.value?.filter((r) => r.kind === 'loan') ?? []);
+const borrowRecords = computed(() => records.value?.filter((r) => r.kind === 'debt') ?? []);
 
 const isAddRecordDialogOpen = ref(false);
 const isEditDialogOpen = ref(false);
@@ -79,7 +73,11 @@ const isDeleteDialogOpen = ref(false);
     <template v-if="isRecordsLoading">
       <!-- Totals skeleton -->
       <div class="flex flex-wrap gap-4">
-        <Card v-for="i in 3" :key="'total-' + i" class="gap-0 py-0 overflow-hidden border-b-4 min-w-44 basis-44 grow-0">
+        <Card
+          v-for="i in 3"
+          :key="'total-' + i"
+          class="min-w-44 grow-0 basis-44 gap-0 overflow-hidden border-b-4 py-0"
+        >
           <CardHeader class="py-3">
             <Skeleton class="h-3 w-20 rounded-md" />
             <Skeleton class="h-5 w-24 rounded-md" />
@@ -92,8 +90,8 @@ const isDeleteDialogOpen = ref(false);
         <Skeleton class="h-5 w-20 rounded-md" />
         <Skeleton class="h-8 w-28 rounded-md" />
       </div>
-      <div class="grid grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-4">
-        <Card v-for="i in 4" :key="'record-' + i" class="gap-0 py-0 overflow-hidden border-l-4">
+      <div class="grid grid-cols-2 gap-4 lg:grid-cols-3 2xl:grid-cols-4">
+        <Card v-for="i in 4" :key="'record-' + i" class="gap-0 overflow-hidden border-l-4 py-0">
           <CardHeader class="py-4">
             <Skeleton class="h-5 w-24 rounded-md" />
             <Skeleton class="h-4 w-32 rounded-md" />
@@ -108,7 +106,12 @@ const isDeleteDialogOpen = ref(false);
       <!-- Totals -->
       <template v-if="totals.length > 0">
         <div class="flex flex-wrap gap-4">
-          <RecordTotalCard v-for="(total, index) in totals" :key="index" :total class="min-w-44 basis-44 grow-0" />
+          <RecordTotalCard
+            v-for="(total, index) in totals"
+            :key="index"
+            :total
+            class="min-w-44 grow-0 basis-44"
+          />
         </div>
       </template>
 
@@ -124,25 +127,15 @@ const isDeleteDialogOpen = ref(false);
       </div>
       <template v-if="lendRecords.length > 0">
         <span class="text-xs text-green-500">Lend ({{ lendRecords.length }})</span>
-        <div class="grid grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-4">
-          <RecordCard
-            v-for="record in lendRecords"
-            :key="record.id"
-            :record
-            :personId
-          />
+        <div class="grid grid-cols-2 gap-4 lg:grid-cols-3 2xl:grid-cols-4">
+          <RecordCard v-for="record in lendRecords" :key="record.id" :record :personId />
         </div>
       </template>
 
       <template v-if="borrowRecords.length > 0">
         <span class="text-xs text-red-500">Borrow ({{ borrowRecords.length }})</span>
-        <div class="grid grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-4">
-          <RecordCard
-            v-for="record in borrowRecords"
-            :key="record.id"
-            :record
-            :personId
-          />
+        <div class="grid grid-cols-2 gap-4 lg:grid-cols-3 2xl:grid-cols-4">
+          <RecordCard v-for="record in borrowRecords" :key="record.id" :record :personId />
         </div>
       </template>
     </template>
