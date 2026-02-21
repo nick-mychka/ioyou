@@ -18,12 +18,7 @@ const closeDialog = () => {
 <template>
   <AlertDialog v-model:open="open">
     <AlertDialogContent>
-      <DeleteRecordDialogContent
-        v-if="recordId"
-        :personId
-        :recordId
-        @close="closeDialog"
-      />
+      <DeleteRecordDialogContent v-if="recordId" :personId :recordId @close="closeDialog" />
     </AlertDialogContent>
   </AlertDialog>
 </template>
