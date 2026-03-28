@@ -16,6 +16,12 @@ const router = createRouter({
       meta: { guestOnly: true },
     },
     {
+      path: '/recovery',
+      name: 'recovery',
+      component: () => import('@/views/auth/ForgotPasswordView.vue'),
+      meta: { guestOnly: true },
+    },
+    {
       path: '/',
       component: ProtectedLayout,
       meta: { requiresAuth: true },
